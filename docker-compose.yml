@@ -32,7 +32,7 @@ services:
     environment:
       - LOG_LEVEL=info
     ports:
-      - "8000:8000"
+      - "8099:8099"
     depends_on:
       - elasticsearch
     networks:
