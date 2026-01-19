@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  elasticsearch:
+    image: elasticsearch:7.17.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node          # одиночный узел
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m      # подрежь память под свою ВМ
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - elk
+
+  kibana:
+    image: kibana:7.17.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk
+
+  api:
+    build: ./API
+    container_name: api-service
+    environment:
+      - LOG_LEVEL=info
+    ports:
+      - "8000:8000"
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk
+
+  filebeat:
+    image: elastic/filebeat:7.17.2
+    container_name: filebeat
+    user: root
+    volumes:
+      - ./ELK/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - elasticsearch
+      - api
+    networks:
+      - elk
+
+volumes:
+  esdata:
+
+networks:
+  elk:
