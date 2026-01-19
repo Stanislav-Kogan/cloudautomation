@@ -17,7 +17,7 @@ spec:
         - name: api
           image: cr.yandex/<REG_ID>/elk-api:latest
           ports:
-            - containerPort: 8000
+            - containerPort: 8099
 ---
 apiVersion: v1
 kind: Service
@@ -30,6 +30,6 @@ spec:
     app: api
   ports:
     - name: http
-      port: 8000
-      targetPort: 8000
+      port: 8099
+      targetPort: 8099
       nodePort: 30080
