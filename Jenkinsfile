@@ -27,8 +27,8 @@ pipeline {
                     echo "==> Waiting for API"
                     sleep 15
 
-                    echo "==> Curl /health"
-                    curl -f http://localhost:8000/health
+                    echo "==> Curl 8099/"
+                    curl -f http://localhost:8099/
                 '''
             }
         }
